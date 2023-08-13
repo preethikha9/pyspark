@@ -22,7 +22,7 @@
     source ~/.bashrc
     spark-shell
     https://linuxhint.com/install-pyspark-ubuntu-22-04/
-    
+
     export SPARK_HOME=/opt/spark
     export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
@@ -31,3 +31,10 @@
 ------
 cd code
 spark-submit basic_code.py
+
+6. git push
+--------------
+git checkout -b branch2
+git add .
+git commit -m  "basic code"
+git push origin B
