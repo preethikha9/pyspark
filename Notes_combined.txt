@@ -1,0 +1,122 @@
+BASIC CODE:
+=============
+from pyspark.sql import SparkSession
+
+# Create SparkSession 
+spark = SparkSession.builder.appName("SparkByExamples.com").getOrCreate() 
+spark.sparkContext.setLogLevel("WARN")
+print(spark)
+rdd=spark.sparkContext.parallelize([1,2,5,7,6])
+print("count")
+print(rdd.count())
+
+data = [('James','','Smith','1991-04-01','M',3000),
+  ('Michael','Rose','','2000-05-19','M',4000),
+  ('Robert','','Williams','1978-09-05','M',4000),
+  ('Maria','Anne','Jones','1967-12-01','F',4000),
+  ('Jen','Mary','Brown','1980-02-17','F',-1)
+]
+
+columns = ["firstname","middlename","lastname","dob","gender","salary"]
+df = spark.createDataFrame(data=data, schema = columns)
+
+df.printSchema()
+
+df.show()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+DATAFRAME:
+============
+from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+
+# Create SparkSession 
+spark = SparkSession.builder.appName("SparkByExamples.com").getOrCreate() 
+spark.sparkContext.setLogLevel("WARN")
+
+#type 1
+#list of tuples as a row
+data = [(1, 'Preethi'),(2, 'Adi'), (3, 'Rathi'), (4, 'lal')]
+df = spark.createDataFrame(data=data)
+df.show()
+df.printSchema()
+
+# type 2 
+# define data and column name 
+data = [(1, 'Preethi'),(2, 'Adi'), (3, 'Rathi'), (4, 'lal')]
+schema = ['id','name']
+df = spark.createDataFrame(data=data, schema=schema)
+df.show()
+df.printSchema()
+
+#  type 3
+#define datatype for schema 
+
+schema = StructType([StructField(name='id',dataType=IntegerType()),StructField(name='name',dataType=StringType()) ])
+df = spark.createDataFrame(data, schema)
+df.show()
+df.printSchema()
+
+# type 4 
+# column name and data together 
+
+data =[{'id':1, 'name': 'pree'},{'id':2, 'name': 'Adi'}]
+df = spark.createDataFrame(data)
+df.show()
+df.printSchema()
+
+#help functioncan be used . it gives detailed context
+print(dir(spark))
+help(spark.createDataFrame)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+READ CSV FILE:
+================
+from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+
+# Create SparkSession 
+spark = SparkSession.builder.appName("SparkByExamples.com").getOrCreate() 
+spark.sparkContext.setLogLevel("WARN")
+
+#single csv file
+df = spark.read.csv(path='data/example1.csv',header=True)
+df.show()
+df.printSchema()
+
+#multiple csv file as list 
+
+df = spark.read.csv(path=['data/example1.csv','data/example2.csv'],header=True)
+df.show()
+df.printSchema()
+
+
+#all csv file 
+#specify only the path 
+df = spark.read.csv(path='data/',header=True)
+df.show()
+df.printSchema()
+
+
+#different way instead of read.csv
+df = spark.read.format('csv').option(key='header',value='True').load(path='data/example1.csv')
+df.show()
+df.printSchema()
+
+
+#all the schema type is going to be string when read from csv 
+# we can define as schema parameter 
+#even if set nullable as false it is going to return true because official code has error
+schema=StructType().add(field='id',data_type=IntegerType(),nullable=False).add(field='name', data_type=StringType(),nullable=False)
+df = spark.read.csv(path='data/example1.csv',schema=schema, header=True)
+df.show()
+df.printSchema()
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
